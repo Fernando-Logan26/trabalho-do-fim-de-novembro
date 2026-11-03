@@ -14,6 +14,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final form = GlobalKey<FormState>();
   late final values = Map<String, String>.of(widget.store.profile);
   bool saving = false;
+  String password = '';
 
   Widget field(String key, String label, {TextInputType? keyboard,
       String? Function(String)? validate, bool optional = false}) {
@@ -55,7 +56,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final year = int.parse(parts[3]!);
       final date = DateTime(year, month, day);
       if (year >= 1900 && date.month == month && date.day == day &&
-          !date.isAfter(DateTime.now())) return null;
+          !date.isAfter(DateTime.now())) {
+        return null;
+      }
     }
     return 'Informe uma data válida no formato DD/MM/AAAA.';
   }
@@ -64,7 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (saving || !form.currentState!.validate()) return;
     setState(() => saving = true);
     try {
-      await widget.store.saveProfile(values);
+      await widget.store.saveProfile(values, password: widget.store.signedIn ? null : password);
       if (mounted) Navigator.pop(context);
     } catch (_) {
       if (mounted) {
@@ -106,6 +109,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           field('email', 'E-mail', keyboard: TextInputType.emailAddress,
               validate: (v) => RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(v)
                   ? null : 'Confira o e-mail.'),
+          if (!widget.store.signedIn)
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Crie uma senha'),
+              obscureText: true,
+              onChanged: (v) => password = v,
+              validator: (v) => (v?.length ?? 0) < 8 ? 'Use pelo menos 8 caracteres.' : null,
+            ),
           FilledButton(onPressed: saving ? null : save, child: const Text('Salvar cadastro')),
         ].map((w) => Padding(padding: const EdgeInsets.only(bottom: 14), child: w)).toList(),
       )),

@@ -3,6 +3,7 @@ import '../widgets/common.dart';
 import '../services/app_store.dart';
 import 'history_screen.dart';
 import 'profile_screen.dart';
+import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final AppStore store;
@@ -54,12 +55,21 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         ListTile(
           leading: const Icon(Icons.person_outline),
-          title: const Text('Meu cadastro'),
-          subtitle: Text(widget.store.profile['name'] ?? 'Cadastrar meus dados'),
+          title: Text(widget.store.signedIn ? 'Meu cadastro' : 'Entrar ou criar cadastro'),
+          subtitle: Text(widget.store.profile['name'] ?? 'Você está como visitante'),
           trailing: const Icon(Icons.chevron_right),
-          onTap: () => Navigator.push(context, MaterialPageRoute<void>(
-            builder: (_) => ProfileScreen(store: widget.store))),
+          onTap: () async {
+            if (!widget.store.signedIn) {
+              await requestLogin(context, widget.store);
+            } else {
+              await Navigator.push(context, MaterialPageRoute<void>(
+                builder: (_) => ProfileScreen(store: widget.store)));
+            }
+          },
         ),
+        if (widget.store.signedIn)
+          ListTile(leading: const Icon(Icons.logout), title: const Text('Sair da conta'),
+              onTap: widget.store.signOut),
       ])),
       const SizedBox(height: 20),
       const PageHeading(

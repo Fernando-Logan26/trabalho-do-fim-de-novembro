@@ -6,7 +6,8 @@ Protótipo Android do projeto acadêmico de mobilidade e acessibilidade urbana d
 
 - Boas-vindas com explicação do aplicativo.
 - Painel inicial com contagem de ocorrências locais, fotos e acesso ao histórico.
-- Cadastro local editável em **Início → Meu cadastro**, com CPF, nome, endereço, sexo, nascimento, telefone, celular e e-mail.
+- Cadastro local editável em **Início → Entrar ou criar cadastro**, com CPF, nome, endereço, sexo, nascimento, telefone, celular e e-mail.
+- Visitantes podem explorar o app. Registrar ou excluir ocorrências exige entrar na conta local. Cadastros anteriores podem definir a primeira senha confirmando e-mail e CPF.
 - Autorização da câmera ao registrar uma foto.
 - Início com notícias ilustrativas das principais ruas e filtros por tema.
 - Mapa interativo OpenStreetMap com zoom, regiões predefinidas e marcadores demonstrativos de rampas e barreiras.
@@ -17,7 +18,7 @@ Protótipo Android do projeto acadêmico de mobilidade e acessibilidade urbana d
 
 ## Limites desta versão
 
-Notícias e marcadores não representam acontecimentos ou condições reais. O aplicativo não calcula rotas acessíveis, não envia ocorrências à Prefeitura, não tem contas de usuário ou servidor, e não publica os registros no mapa. A busca do mapa oferece três regiões predefinidas. Os mapas exigem internet. Desinstalar o aplicativo apaga os registros locais. O uso dos serviços de mapa está sujeito às políticas de seus provedores; para distribuição em escala, configure um provedor de mapas apropriado.
+Notícias e marcadores não representam acontecimentos ou condições reais. O aplicativo não calcula rotas acessíveis, não envia ocorrências à Prefeitura, usa uma conta local por aparelho, sem servidor, e não publica os registros no mapa. A busca do mapa oferece três regiões predefinidas. Os mapas exigem internet. Desinstalar o aplicativo apaga os registros locais. O uso dos serviços de mapa está sujeito às políticas de seus provedores; para distribuição em escala, configure um provedor de mapas apropriado.
 
 ## Desenvolvimento
 

@@ -9,6 +9,7 @@ import 'screens/routes_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/report_screen.dart';
+import 'screens/login_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -79,6 +80,7 @@ class _AppShellState extends State<AppShell> {
   int tab = 0;
   void select(int value) => setState(() => tab = value);
   Future<void> report() async {
+    if (!await requestLogin(context, widget.store) || !mounted) return;
     final saved = await Navigator.push<bool>(
       context,
       MaterialPageRoute(builder: (_) => ReportScreen(store: widget.store)),

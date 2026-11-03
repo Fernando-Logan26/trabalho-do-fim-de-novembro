@@ -21,9 +21,15 @@ void main() {
         description: 'Barreira de teste na esquina.',
         createdAt: DateTime(2026, 1, 1),
       );
+      await expectLater(store.add(item), throwsStateError);
+      await store.saveProfile({
+        'email': 'teste@example.org',
+      }, password: 'senha-teste');
       await store.add(item);
       final restored = AppStore(prefs);
       expect(restored.reports.single.description, item.description);
+      await expectLater(restored.remove(item), throwsStateError);
+      expect(await restored.signIn('teste@example.org', 'senha-teste'), isTrue);
       await restored.remove(restored.reports.single);
       expect(AppStore(prefs).reports, isEmpty);
     },
@@ -32,11 +38,69 @@ void main() {
     final prefs = await SharedPreferences.getInstance();
     final store = AppStore(prefs);
     expect(store.profile, isEmpty);
-    await store.saveProfile({'name': 'Perfil de teste'});
+    await store.saveProfile({
+      'name': 'Perfil de teste',
+      'email': 'teste@example.org',
+    }, password: 'senha-teste');
     final restored = AppStore(prefs);
+    expect(restored.profile, isEmpty);
+    expect(await restored.signIn('teste@example.org', 'errada'), isFalse);
+    expect(await restored.signIn('teste@example.org', 'senha-teste'), isTrue);
     expect(restored.profile['name'], 'Perfil de teste');
-    await restored.saveProfile({...restored.profile, 'name': 'Nome atualizado'});
-    expect(AppStore(prefs).profile['name'], 'Nome atualizado');
+    await restored.saveProfile({
+      ...restored.profile,
+      'name': 'Nome atualizado',
+    });
+    expect(restored.profile['name'], 'Nome atualizado');
+    restored.signOut();
+    expect(restored.profile, isEmpty);
+  });
+  test('Cadastro anterior exige confirmação antes de criar a senha', () async {
+    SharedPreferences.setMockInitialValues({
+      'userProfile':
+          '{"name":"Pessoa","email":"p@example.org","cpf":"12345678901"}',
+    });
+    final prefs = await SharedPreferences.getInstance();
+    final store = AppStore(prefs);
+    expect(store.profile, isEmpty);
+    expect(
+      await store.signIn(
+        'p@example.org',
+        'nova-senha',
+        legacyCpf: '11111111111',
+      ),
+      isFalse,
+    );
+    expect(
+      await store.signIn(
+        'p@example.org',
+        'nova-senha',
+        legacyCpf: '12345678901',
+      ),
+      isTrue,
+    );
+    expect(store.profile['name'], 'Pessoa');
+    expect(store.needsActivation, isFalse);
+  });
+  testWidgets('Visitante pode cancelar o login ao tentar registrar', (
+    tester,
+  ) async {
+    final store = AppStore(await SharedPreferences.getInstance());
+    await store.setWelcome();
+    await tester.pumpWidget(MobilityApp(store: store));
+    await tester.scrollUntilVisible(
+      find.text('Registrar uma barreira'),
+      450,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Registrar uma barreira'));
+    await tester.pumpAndSettle();
+    expect(find.text('Criar cadastro'), findsOneWidget);
+    expect(find.byType(ReportScreen), findsNothing);
+    await tester.tap(find.text('Continuar como visitante'));
+    await tester.pumpAndSettle();
+    expect(find.text('Caminhos'), findsOneWidget);
+    expect(store.signedIn, isFalse);
   });
   test('Preferências de acessibilidade persistem', () async {
     final prefs = await SharedPreferences.getInstance();
@@ -71,7 +135,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Início'), findsOneWidget);
     expect(find.text('Ocorrências registradas: 0'), findsOneWidget);
-    expect(find.text('Meu cadastro'), findsOneWidget);
+    expect(find.text('Entrar ou criar cadastro'), findsOneWidget);
     expect(store.welcomed, isTrue);
     expect(tester.takeException(), isNull);
   });

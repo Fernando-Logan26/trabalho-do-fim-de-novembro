@@ -48,7 +48,7 @@ class HistoryScreen extends StatelessWidget {
               const NoteBox(
                 'Registro pessoal de demonstração. Não existe protocolo municipal ou acompanhamento por um órgão público.',
               ),
-              TextButton.icon(
+              if (store.signedIn) TextButton.icon(
                 icon: const Icon(Icons.delete_outline),
                 label: const Text('Excluir registro'),
                 onPressed: () async {
