@@ -28,6 +28,19 @@ class AppStore extends ChangeNotifier {
       }
     }
   }
+  Map<String, String> get profile {
+    final raw = preferences.getString('userProfile');
+    if (raw == null) return {};
+    return Map<String, String>.from(jsonDecode(raw) as Map);
+  }
+
+  Future<void> saveProfile(Map<String, String> values) async {
+    if (!await preferences.setString('userProfile', jsonEncode(values))) {
+      throw StateError('Não foi possível salvar o cadastro.');
+    }
+    notifyListeners();
+  }
+
   List<Occurrence> get reports => List.unmodifiable(_reports);
   Future<void> add(Occurrence item) async {
     final next = [item, ..._reports];

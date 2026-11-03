@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import '../models/occurrence.dart';
@@ -35,6 +36,12 @@ class _ReportScreenState extends State<ReportScreen> {
         imageQuality: 85,
       );
       if (mounted && result != null) setState(() => photo = result);
+    } on PlatformException catch (error) {
+      if (mounted) {
+        message(context, error.code == 'camera_access_denied'
+            ? 'Câmera sem permissão. Você pode usar a galeria, continuar sem foto ou liberar a câmera nas configurações do aplicativo.'
+            : 'Não foi possível abrir a foto. Tente novamente.');
+      }
     } catch (_) {
       if (mounted) {
         message(

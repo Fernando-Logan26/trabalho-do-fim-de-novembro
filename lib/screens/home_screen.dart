@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import '../widgets/common.dart';
+import '../services/app_store.dart';
+import 'history_screen.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  final AppStore store;
   final VoidCallback onMap, onReport;
-  const HomeScreen({required this.onMap, required this.onReport, super.key});
+  const HomeScreen({required this.store, required this.onMap, required this.onReport, super.key});
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -37,6 +41,27 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) => ListView(
     padding: const EdgeInsets.fromLTRB(22, 26, 22, 28),
     children: [
+      const PageHeading('Mobilidade PVH', 'Meu painel',
+          subtitle: 'Suas ocorrências neste aparelho.'),
+      Card(child: Column(children: [
+        ListTile(
+          leading: const Icon(Icons.assignment_outlined),
+          title: Text('Ocorrências registradas: ${widget.store.reports.length}'),
+          subtitle: Text('Com foto: ${widget.store.reports.where((r) => r.photoPath != null).length}'),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () => Navigator.push(context, MaterialPageRoute<void>(
+            builder: (_) => HistoryScreen(store: widget.store))),
+        ),
+        ListTile(
+          leading: const Icon(Icons.person_outline),
+          title: const Text('Meu cadastro'),
+          subtitle: Text(widget.store.profile['name'] ?? 'Cadastrar meus dados'),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () => Navigator.push(context, MaterialPageRoute<void>(
+            builder: (_) => ProfileScreen(store: widget.store))),
+        ),
+      ])),
+      const SizedBox(height: 20),
       const PageHeading(
         'Porto Velho · atualizações',
         'O que acontece\nnas suas ruas',

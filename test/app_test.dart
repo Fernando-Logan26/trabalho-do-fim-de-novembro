@@ -28,6 +28,16 @@ void main() {
       expect(AppStore(prefs).reports, isEmpty);
     },
   );
+  test('Cadastro local pode ser criado e atualizado', () async {
+    final prefs = await SharedPreferences.getInstance();
+    final store = AppStore(prefs);
+    expect(store.profile, isEmpty);
+    await store.saveProfile({'name': 'Perfil de teste'});
+    final restored = AppStore(prefs);
+    expect(restored.profile['name'], 'Perfil de teste');
+    await restored.saveProfile({...restored.profile, 'name': 'Nome atualizado'});
+    expect(AppStore(prefs).profile['name'], 'Nome atualizado');
+  });
   test('Preferências de acessibilidade persistem', () async {
     final prefs = await SharedPreferences.getInstance();
     final store = AppStore(prefs);
@@ -60,6 +70,8 @@ void main() {
     await tester.tap(find.byType(FilledButton));
     await tester.pumpAndSettle();
     expect(find.text('Início'), findsOneWidget);
+    expect(find.text('Ocorrências registradas: 0'), findsOneWidget);
+    expect(find.text('Meu cadastro'), findsOneWidget);
     expect(store.welcomed, isTrue);
     expect(tester.takeException(), isNull);
   });

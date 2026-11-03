@@ -5,6 +5,9 @@ Protótipo Android do projeto acadêmico de mobilidade e acessibilidade urbana d
 ## Funcionalidades
 
 - Boas-vindas com explicação do aplicativo.
+- Painel inicial com contagem de ocorrências locais, fotos e acesso ao histórico.
+- Cadastro local editável em **Início → Meu cadastro**, com CPF, nome, endereço, sexo, nascimento, telefone, celular e e-mail.
+- Autorização da câmera ao registrar uma foto.
 - Início com notícias ilustrativas das principais ruas e filtros por tema.
 - Mapa interativo OpenStreetMap com zoom, regiões predefinidas e marcadores demonstrativos de rampas e barreiras.
 - Ocorrências com endereço, descrição e foto da câmera ou galeria, persistidas no aparelho.

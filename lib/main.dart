@@ -95,7 +95,7 @@ class _AppShellState extends State<AppShell> {
   Widget build(BuildContext context) => Scaffold(
     body: SafeArea(
       child: switch (tab) {
-        0 => HomeScreen(onMap: () => select(1), onReport: report),
+        0 => HomeScreen(store: widget.store, onMap: () => select(1), onReport: report),
         1 => MapScreen(onReport: report),
         2 => RoutesScreen(
           store: widget.store,
